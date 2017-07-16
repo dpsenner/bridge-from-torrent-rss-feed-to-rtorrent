@@ -138,7 +138,7 @@ scgi_port = 127.0.0.1:5000
 
 Further the scgi port enabled in rtorrent needs to be mounted in a apache2 site. This can be achieved by configuring a site (i.e. /etc/apache2.sites-enabled/default) to contain the SCGIMount directive.
 
-Note that it is wise to not make the RPC2 interface accessible to anyone. Therefore the following example further adds a basic password protection to provide a minimum of security. Adding simple authentication it is easy to provide the username and password in the XML rpc uri.
+Note that it is wise to not make the RPC2 interface accessible to anyone. Anyone would then be allowed to remotely control your rtorrent instance! Therefore this example further adds basic password protection to provide a minimum of security. Adding simple authentication makes it easy to provide the username and password in the XML rpc uri.
 
 ```
 <VirtualHost *:80>
@@ -160,6 +160,12 @@ Assuming that the "allowed_user" has the password "verysecurepassword" and runs 
 ```
 --xml-rpc-uri=http://allowed_user:verysecurepassword@rtorrent.host/RPC2
 ```
+
+#### Remark: Transdroid
+
+Having configured rtorrent and apache2 like this, we now also have set up our rtorrent instance to be controlled remotely with Transdroid from an Android device.
+
+https://www.transdroid.org/
 
 ## Installation as a cronjob
 
