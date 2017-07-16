@@ -132,10 +132,20 @@ class CommandLineArguments(object):
 				cookies[cookie_key] = cookie_value
 				cookie_key = cookie_value = None
 		return cookies
+
+	def _getVerbose(self):
+		value = self._getFirstArgument(u"--verbose")
+		if value in [None, "yes"]:
+			return True
+		elif value in ["no"]:
+			return False
+		else:
+			raise ValueError(u"Expected --verbose=[yes|no] but got --verbose={0} instead".format(value))
 		
 	RSSFeedUri = property(_getRSSFeedUri)
 	XmlRpcUri = property(_getXmlRpcUri)
 	RSSFeedCookies = property(_getRSSFeedCookies)
+	Verbose = property(_getVerbose)
 
 def main():
 	# parse arguments
@@ -143,17 +153,22 @@ def main():
 	rssuri = commandlineargs.RSSFeedUri
 	xmlrpcuri = commandlineargs.XmlRpcUri
 	rssfeedcookies = commandlineargs.RSSFeedCookies
+	verbose = commandlineargs.Verbose
 
 	# run
 	rssfeed = RSSFeed(rssuri, rssfeedcookies)
 	xmlrpc = XmlRpc(xmlrpcuri, rssfeedcookies)
-	sys.stdout.write(u"Fetching rss feeds .. ")
+	if verbose:
+		sys.stdout.write(u"Fetching rss feeds .. ")
 	torrents = rssfeed.getTorrents()
-	print u"OK"
-	for torrent in torrents:
-		sys.stdout.write(u"{0} .. ".format(torrent.Title))
-		xmlrpc.loadstart(torrent)
+	if verbose:
 		print u"OK"
+	for torrent in torrents:
+		if verbose:
+			sys.stdout.write(u"{0} .. ".format(torrent.Title))
+		xmlrpc.loadstart(torrent)
+		if verbose:
+			print u"OK"
 
 if __name__ == '__main__':
 	main()
