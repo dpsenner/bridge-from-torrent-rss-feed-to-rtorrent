@@ -172,7 +172,13 @@ Please note that it may be wise to write a simple intermediary script that is ru
 xml_rpc_uri="http://rtorrent.host/RPC2"
 rss_feed_uri="http://rss-feed.host/rss-feed"
 
-./bridge-from-torrent-rss-feed-to-rtorrent/main.py \
+# REMARK: when running as a cronjob it needs to be an absolute path to the script
+# set the $USER variable to the actual user that this command is run with if the
+# $USER environment variable is not available
+#USER=nobody
+
+# run the command
+/home/$USER/bridge-from-torrent-rss-feed-to-rtorrent/main.py \
 --xml-rpc-uri="$xml_rpc_uri" \
 --rss-feed-uri="$rss_feed_uri" \
 --verbose=no
