@@ -106,7 +106,7 @@ A typical installation would add the script as a cronjob that runs regularily ev
 ## Typical installation steps
 
 - Clone repository; this should automatically checkout the master branch which tracks the latest stable changeset
-- Run the script ones to test if the arguments are fine
+- Run the script to test if the arguments are fine
 ```
 ~/bridge-from-torrent-rss-feed-to-rtorrent/$ main.py --rss-feed-uri=http://rss-feed.host/rss-feed --xml-rpc-uri=http://rtorrent.host/RPC2
 ```
