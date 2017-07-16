@@ -111,27 +111,6 @@ These are the requirements for this tool to work:
 - python-feedparser
 - python-requests
 
-Further rtorrent has to be installed with xmlrpc enabled and mapped to HTTP with a SCGIMount as follows:
-
-- .rtorrent.rc
-```
-...
-
-# enable scgi support
-scgi_port = 127.0.0.1:5000
-
-...
-```
-
-- /etc/apache2/sites-enabled/default
-```
-<VirtualHost *:80>
-	...
-	SCGIMount /RPC2 127.0.0.1:5000
-	...
-</VirtualHost>
-```
-
 ### Install requirements on Ubuntu 16.04 LTS
 
 This section explains how to install the requirements on ubuntu 16.04 LTS.
@@ -140,7 +119,28 @@ This section explains how to install the requirements on ubuntu 16.04 LTS.
 ~$ sudo apt install python2.7 python-feedparser python-requests
 ```
 
-## Install as a cronjob
+### rtorrent requirements
+
+Further rtorrent has to be installed with xmlrpc enabled. This can be achieved by configuring the .rtorrent.rc configuration file to contain the following.
+
+```
+# enable scgi support
+scgi_port = 127.0.0.1:5000
+```
+
+### apache2 requirements
+
+Further the scgi port enabled in rtorrent needs to be mounted in a apache2 site. This can be achieved by configuring a site (i.e. /etc/apache2.sites-enabled/default) to contain the SCGIMount directive.
+
+```
+<VirtualHost *:80>
+	...
+	SCGIMount /RPC2 127.0.0.1:5000
+	...
+</VirtualHost>
+```
+
+## Installation as a cronjob
 
 - Make sure you have installed all the requirements
 - Clone repository; this should automatically checkout the master branch which tracks the latest stable changeset
