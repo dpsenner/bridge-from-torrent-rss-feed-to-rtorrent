@@ -2,7 +2,7 @@ This is a small tool that takes torrents from a rss feed and starts them on rtor
 
 # Usage
 
-This section explains how to use the tool.
+This section explains how to use the tool. Typically this tool can be run by simply running ./main.py with the right command line arguments. The following section explains the available command line arguments.
 
 ## Command line arguments
 
@@ -10,7 +10,7 @@ The tool accepts the following command line arguments:
 
 ### --xml-rpc-uri
 
-Sets the XML RPC Uri to the . This argument is required.
+This argument sets the uri to the rtorrent http xmlrpc interface. This argument is required.
 
 #### Allowed values
 
@@ -28,7 +28,7 @@ This argument is required but has no default value.
 
 ### --rss-feed-uri
 
-Sets the RSS Feed Uri. This argument is required.
+This argument sets the uri to the RSS feed. This argument is required.
 
 #### Allowed values
 
@@ -46,7 +46,7 @@ This argument is required but has no default value.
 
 ### --rss-feed-cookie-key
 
-Sets a cookie to be used when retrieving the RSS feed and when fetching the torrent that a RSS feed link points to. The tool interprets each --rss-feed-cookie-key and --rss-feed-cookie-value argument in the order that they are given on the command line. The cookie key must argument must come before the cookie value argument.
+This argument sets a cookie key to be used when retrieving the RSS feed and when fetching the torrent that a RSS feed link points to. This argument needs to be combined with a --rss-feed-cookie-value argument. The tool then interprets this argument as the cookie key and the next --rss-feed-cookie-value argument as the value of the cookie. The cookie key must argument must come before the cookie value argument.
 
 #### Allowed values
 
@@ -66,7 +66,7 @@ This example sets the cookie foo=bar when sending requests to fetch the RSS feed
 
 ### --rss-feed-cookie-value
 
-Sets a cookie to be used when retrieving the RSS feed and when fetching the torrent that a RSS feed link points to. The tool interprets each --rss-feed-cookie-key and --rss-feed-cookie-value argument in the order that they are given on the command line. The cookie key must argument must come before the cookie value argument.
+This argument sets a cookie value to be used when retrieving the RSS feed and when fetching the torrent that a RSS feed link points to. This argument needs to be combined with a --rss-feed-cookie-key argument. The tool interprets this argument as the value of the cookie and the previous -rss-feed-cooki-key argument as the key of the cookie. The cookie value argument must come after the cookie key argument.
 
 #### Allowed values
 
