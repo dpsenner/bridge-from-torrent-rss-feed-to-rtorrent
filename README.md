@@ -111,6 +111,27 @@ These are the requirements for this tool to work:
 - python-feedparser
 - python-requests
 
+Further rtorrent has to be installed with xmlrpc enabled and mapped to HTTP with a SCGIMount as follows:
+
+- .rtorrent.rc
+```
+...
+
+# enable scgi support
+scgi_port = 127.0.0.1:5000
+
+...
+```
+
+- /etc/apache2/sites-enabled/default
+```
+<VirtualHost *:80>
+	...
+	SCGIMount /RPC2 127.0.0.1:5000
+	...
+</VirtualHost>
+```
+
 ### Install requirements on Ubuntu 16.04 LTS
 
 This section explains how to install the requirements on ubuntu 16.04 LTS.
@@ -133,8 +154,21 @@ This section explains how to install the requirements on ubuntu 16.04 LTS.
 ```
 - Add the following lines at the end to run the script every 5 minutes:
 ```
-*/5 * * * * /home/$user/bridge-from-torrent-rss-feed-to-rtorrent/main.py --xml-rpc-uri=http://rtorrent.host/RPC2 --rss-feed-uri=http://rss-feed.host --verbose=no
+*/5 * * * * /home/$user/bridge-from-torrent-rss-feed-to-rtorrent/main.py --xml-rpc-uri=http://rtorrent.host/RPC2 --rss-feed-uri=http://rss-feed.host/rss-feed --verbose=no
 ```
 - Save the changes and exit the editor
 - Done
 
+Please note that it may be wise to write a simple intermediary script that is run by the cronjob and makes the crontab -e easier. A typical sample script could be:
+
+```
+#!/bin/bash
+xml_rpc_uri="http://rtorrent.host/RPC2"
+rss_feed_uri="http://rss-feed.host/rss-feed"
+
+./bridge-from-torrent-rss-feed-to-rtorrent/main.py \
+--xml-rpc-uri="$xml_rpc_uri" \
+--rss-feed-uri="$rss_feed_uri" \
+--verbose=no
+
+```
