@@ -103,8 +103,25 @@ By default the tool runs verbosely (--verbose=yes), meaning that it outputs info
 
 A typical installation would add the script as a cronjob that runs regularily every few minutes. This has the effect that new torrents in the rss feed are so started and downloaded. It further allows the script to send failures through the crond daemon. Please note that the script should not generate output when running as a cronjob so long all is fine.
 
-## Typical installation steps
+## Requirements
 
+These are the requirements for this tool to work:
+
+- python2.7
+- python-feedparser
+- python-requests
+
+### Install requirements on Ubuntu 16.04 LTS
+
+This section explains how to install the requirements on ubuntu 16.04 LTS.
+
+```
+~$ sudo apt install python2.7 python-feedparser python-requests
+```
+
+## Install as a cronjob
+
+- Make sure you have installed all the requirements
 - Clone repository; this should automatically checkout the master branch which tracks the latest stable changeset
 - Run the script to test if the arguments are fine
 ```
@@ -121,22 +138,3 @@ A typical installation would add the script as a cronjob that runs regularily ev
 - Save the changes and exit the editor
 - Done
 
-# Requirements
-
-These are the requirements for this tool to work:
-
-- python2.7
-- python-feedparser
-- python-requests
-
-## Installation
-
-This section explains how to install the requirements.
-
-### Ubuntu 16.04 LTS
-
-This section explains how to install the requirements on ubuntu 16.04 LTS.
-
-```
-~$ sudo apt install python2.7 python-feedparser python-requests
-```
