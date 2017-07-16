@@ -99,15 +99,27 @@ By default the tool runs verbosely (--verbose=yes), meaning that it outputs info
 --verbose=yes
 ```
 
-## Example
+# Installation
 
+A typical installation would add the script as a cronjob that runs regularily every few minutes. This has the effect that new torrents in the rss feed are so started and downloaded. It further allows the script to send failures through the crond daemon. Please note that the script should not generate output when running as a cronjob so long all is fine.
+
+## Typical installation steps
+
+- Clone repository; this should automatically checkout the master branch which tracks the latest stable changeset
+- Run the script ones to test if the arguments are fine
 ```
-main.py --rss-feed-uri=http://rss-feed.host/rss-feed --xml-rpc-uri=http://rtorrent-host/RPC2
+~/bridge-from-torrent-rss-feed-to-rtorrent/$ main.py --rss-feed-uri=http://rss-feed.host/rss-feed --xml-rpc-uri=http://rtorrent.host/RPC2
 ```
-
-## Installation
-
-A typical installation would add the script as a cronjob that runs regularily every few minutes. This has the effect that new torrents in the rss feed are so started and downloaded. It further allows the script to send failures through the crond daemon. Please note that the script should not generate output so long all is fine.
+- Add cronjob by running as the user under which the cronjob should run by typing:
+```
+~/$ crontab -e
+```
+- Add the following lines at the end to run the script every 5 minutes:
+```
+*/5 * * * * /home/$user/bridge-from-torrent-rss-feed-to-rtorrent/main.py --xml-rpc-uri=http://rtorrent.host/RPC2 --rss-feed-uri=http://rss-feed.host --verbose=no
+```
+- Save the changes and exit the editor
+- Done
 
 # Requirements
 
@@ -126,5 +138,5 @@ This section explains how to install the requirements.
 This section explains how to install the requirements on ubuntu 16.04 LTS.
 
 ```
-apt install python2.7 python-feedparser python-requests
+~$ sudo apt install python2.7 python-feedparser python-requests
 ```
