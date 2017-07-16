@@ -95,8 +95,14 @@ By default the tool runs verbosely (--verbose=yes), meaning that it outputs info
 
 #### Default value
 
+- yes
+
+#### Example usage
+
+This example disables verbose outputs.
+
 ```
---verbose=yes
+--verbose=no
 ```
 
 # Installation
