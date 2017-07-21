@@ -1,3 +1,10 @@
+# 1.1
+
+## Improvements
+
+* Added exception handling in the case that the network or one of the hosts is down
+* Refactored the loading of the torrent content into a separate function
+
 # 1.0
 
 ## Improvements
