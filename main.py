@@ -18,20 +18,39 @@ class RSSTorrent(object):
 	Title = property(_getTitle)
 	Link = property(_getLink)
 
+class TorrentFile(object):
+	def __init__(self, title, link, content):
+		self.__title = title
+		self.__link = link
+		self.__content = content
+
+	def _getTitle(self):
+		return self.__title
+
+	def _getLink(self):
+		return self.__link
+
+	def _getContent(self):
+		return self.__content
+
+	def __repr__(self):
+		return u"{0} ({1})".format(self.Title, self.Link)
+
+	Title = property(_getTitle)
+	Link = property(_getLink)
+	Content = property(_getContent)
+
 class XmlRpc(object):
 	def __init__(self, uri, cookies):
 		self.__uri = uri
 		self.__cookies = cookies
 
 	def loadstart(self, torrent):
-		if not isinstance(torrent, RSSTorrent):
-			raise ValueError(u"Expected {0} but got {1} instead".format(RSSTorrent, type(torrent)))
+		if not isinstance(torrent, TorrentFile):
+			raise ValueError(u"Expected {0} but got {1} instead".format(TorrentFile, type(torrent)))
 
-		# fetch torrent content
-		import requests
-		torrenturi = torrent.Link
-		r = requests.get(torrenturi, cookies=self.Cookies)
-		torrentdata = r.content
+		# get the content of the torrent file
+		torrentdata = torrent.Content
 
 		# load raw start torrent
 		import xmlrpclib
@@ -56,6 +75,18 @@ class RSSFeed(object):
 	def getTorrents(self):
 		torrents = self._getTorrentsGenerator()
 		return list(torrents)
+
+	def getTorrentFile(self, torrent):
+		if not isinstance(torrent, RSSTorrent):
+			raise ValueError(u"Expected {0} but got {1} instead".format(RSSTorrent, type(torrent)))
+
+		# fetch torrent content
+		import requests
+		r = requests.get(torrent.Link, cookies=self.Cookies)
+		torrentdata = r.content
+
+		return TorrentFile(torrent.Title, torrent.Link, torrentdata)
+
 
 	def _getTorrentsGenerator(self):
 		# fetch rss feed content
@@ -165,10 +196,16 @@ def main():
 		print u"OK"
 	for torrent in torrents:
 		if verbose:
-			sys.stdout.write(u"{0} .. ".format(torrent.Title))
-		xmlrpc.loadstart(torrent)
+			sys.stdout.write(u"Fetch torrent file for {0} .. ".format(torrent.Title))
+		torrentfile = rssfeed.getTorrentFile(torrent)
 		if verbose:
 			print u"OK"
+			print sys.stdout.write(u"Loadstart {0} .. ".format(torrent.Title))
+		xmlrpc.loadstart(torrentfile)
+		if verbose:
+			print u"OK"
+	if verbose:
+		print u"Work done, bye!"
 
 if __name__ == '__main__':
 	main()
