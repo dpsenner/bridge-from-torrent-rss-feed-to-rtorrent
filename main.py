@@ -89,12 +89,10 @@ class RSSFeed(object):
 			import requests
 			r = requests.get(torrent.Link, cookies=self.Cookies)
 			torrentdata = r.content
+			return TorrentFile(torrent.Title, torrent.Link, torrentdata)
 		except ConnectionError:
 			_, ex, traceback = sys.exc_info()
 			raise Exception(u"Could not fetch torrent file for {0}.".format(torrent.Title)), (ex.errno, ex.message), traceback
-
-		return TorrentFile(torrent.Title, torrent.Link, torrentdata)
-
 
 	def _getTorrentsGenerator(self):
 		# fetch rss feed content
@@ -202,20 +200,28 @@ def main():
 	rssfeed = RSSFeed(rssuri, rssfeedcookies)
 	xmlrpc = XmlRpc(xmlrpcuri, rssfeedcookies)
 	if verbose:
-		sys.stdout.write(u"Fetching rss feeds .. ")
+		sys.stdout.write(u"Fetching rss feed .. ")
+		sys.stdout.flush()
 	torrents = rssfeed.getTorrents()
 	if verbose:
 		print u"OK"
-	for torrent in torrents:
+	if torrents:
+		for torrent in torrents:
+			if verbose:
+				print u"Processing torrent {0} ..".format(torrent.Title)
+				sys.stdout.write(u"Fetching torrent file .. ")
+				sys.stdout.flush()
+			torrentfile = rssfeed.getTorrentFile(torrent)
+			if verbose:
+				print u"OK"
+				sys.stdout.write(u"Invoking loadstart .. ")
+				sys.stdout.flush()
+			xmlrpc.loadstart(torrentfile)
+			if verbose:
+				print u"OK"
+	else:
 		if verbose:
-			sys.stdout.write(u"Fetch torrent file for {0} .. ".format(torrent.Title))
-		torrentfile = rssfeed.getTorrentFile(torrent)
-		if verbose:
-			print u"OK"
-			print sys.stdout.write(u"Loadstart {0} .. ".format(torrent.Title))
-		xmlrpc.loadstart(torrentfile)
-		if verbose:
-			print u"OK"
+			print u"Received no torrents from the rss feed."
 	if verbose:
 		print u"Work done, bye!"
 
