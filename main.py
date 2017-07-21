@@ -53,10 +53,14 @@ class XmlRpc(object):
 		torrentdata = torrent.Content
 
 		# load raw start torrent
-		import xmlrpclib
-		proxy = xmlrpclib.ServerProxy(self.Uri, encoding='utf-8')
-		arg1 = xmlrpclib.Binary(torrentdata)
-		return proxy.load_raw_start(arg1)
+		try:
+			import xmlrpclib
+			proxy = xmlrpclib.ServerProxy(self.Uri, encoding='utf-8')
+			arg1 = xmlrpclib.Binary(torrentdata)
+			return proxy.load_raw_start(arg1)
+		except ConnectionError:
+			_, ex, traceback = sys.exc_info()
+			raise Exception(u"Could not start {0}.".format(torrent.Title)), (ex.errno, ex.message), traceback
 
 	def _getUri(self):
 		return self.__uri
@@ -81,17 +85,25 @@ class RSSFeed(object):
 			raise ValueError(u"Expected {0} but got {1} instead".format(RSSTorrent, type(torrent)))
 
 		# fetch torrent content
-		import requests
-		r = requests.get(torrent.Link, cookies=self.Cookies)
-		torrentdata = r.content
+		try:
+			import requests
+			r = requests.get(torrent.Link, cookies=self.Cookies)
+			torrentdata = r.content
+		except ConnectionError:
+			_, ex, traceback = sys.exc_info()
+			raise Exception(u"Could not fetch torrent file for {0}.".format(torrent.Title)), (ex.errno, ex.message), traceback
 
 		return TorrentFile(torrent.Title, torrent.Link, torrentdata)
 
 
 	def _getTorrentsGenerator(self):
 		# fetch rss feed content
-		import requests
-		r = requests.get(self.Uri, cookies=self.Cookies)
+		try:
+			import requests
+			r = requests.get(self.Uri, cookies=self.Cookies)
+		except ConnectionError:
+			_, ex, traceback = sys.exc_info()
+			raise Exception(u"Could not fetch feed."), (ex.errno, ex.message), traceback
 		data = r.content
 
 		# parse rss feed
