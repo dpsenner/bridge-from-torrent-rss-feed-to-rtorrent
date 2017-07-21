@@ -1,3 +1,5 @@
+# Introduction
+
 This is a small tool that takes torrents from a rss feed and starts them on rtorrent.
 
 # Usage
@@ -205,3 +207,8 @@ rss_feed_uri="http://rss-feed.host/rss-feed"
 --verbose=no
 
 ```
+
+# Contributing
+
+Please read the contributing guidelines before starting to work on a patch, writing issues or file a pull request. The contributing guidelines are available [here](CONTRIBUTING.md).
+
