@@ -1,3 +1,14 @@
+# v1.1.2
+
+## Breaking changes
+
+* Changed the tag naming scheme to have the prefix `v`
+
+## Improvements
+
+* Added a link from README to CHANGELOG
+* Fixed 1.1.1 Improvements to be h2 instead of h1
+
 # 1.1.1
 
 ## Improvements
