@@ -218,6 +218,10 @@ rss_feed_uri="http://rss-feed.host/rss-feed"
 
 ```
 
+# Changelog
+
+You can review the changelog of all past releases [here](CHANGELOG.md).
+
 # Contributing
 
 Please read the contributing guidelines before starting to work on a patch, writing issues or file a pull request. The contributing guidelines are available [here](CONTRIBUTING.md).
