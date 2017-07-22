@@ -1,3 +1,9 @@
+# 1.1.1
+
+# Improvements
+
+* Added an example to the README
+
 # 1.1
 
 ## Improvements
