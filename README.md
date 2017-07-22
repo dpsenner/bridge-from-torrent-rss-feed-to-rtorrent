@@ -9,7 +9,9 @@ This section explains how to use the tool. Typically this tool can be run by sim
 The following example will fetch the RSS feeds from `http://rss-feed.host/rss-feed` and start all torrents on the rtorrent instance behind the uri `http://rtorrent.host/RPC2`.
 
 ```
-~/bridge-from-torrent-rss-feed-to-rtorrent$ main.py --xml-rpc-uri=http://rtorrent.host/RPC2 --rss-feed-uri=http://rss-feed.host/rss-feed
+~/bridge-from-torrent-rss-feed-to-rtorrent$ main.py \
+--rss-feed-uri=http://rss-feed.host/rss-feed \
+--xml-rpc-uri=http://rtorrent.host/RPC2
 ```
 
 The following section explains all available command line arguments.
