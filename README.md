@@ -226,3 +226,42 @@ You can review the changelog of all past releases [here](CHANGELOG.md).
 
 Please read the contributing guidelines before starting to work on a patch, writing issues or file a pull request. The contributing guidelines are available [here](CONTRIBUTING.md).
 
+# Release
+
+This section outlines how to make a release. The [CHANGELOG.md](CHANGELOG.md) is in a format that allows the usage of the tool [chag](https://github.com/mtdowling/chag).
+
+## Prepare the release
+
+* Checkout develop by running `git checkout develop`
+* If there are any feature branches that should be included in the release, merge them into branch `develop`: `git merge $featurebranch`
+* Check the output of `chag latest`, it should be:
+```
+$ chag latest
+Unreleased
+```
+  * If there is none, update the `CHANGELOG.md` file to contain a section `## Unreleased`
+  * Commit the changes
+* Verify if the unreleased changelog contains all the changes that were made. This can be done by running:
+```
+$ chag contents Unreleased
+```
+* Run `chag update $version`. This should update `## Unreleased` to read as `## $version - $today`
+* Commit the changes
+* Create release branch `git branch release/v$version`
+* Update `CHANGELOG.md` to contain once more the section `## Unreleased`
+* Push the new head of `develop`: `git push`
+
+## Make the release
+
+Please note that the following assumes that no release branch was made.
+
+* Checkout master: `git checkout master`
+* Merge the changes that should be released: `git merge $releasebranch`
+* Push the new head of `master`: `git push`
+* Tag the release: `chag tag --sign --addv`
+* Push the tags: `git push --tags`
+* Eventually remove the now released release branch:
+  * `git branch -d $releasebranch`
+  * `git push origin --delete $releasebranch`
+  * Remember to run `git fetch --all --prune` on all other machines
+
