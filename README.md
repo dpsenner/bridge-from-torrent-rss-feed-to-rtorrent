@@ -230,6 +230,22 @@ Please read the contributing guidelines before starting to work on a patch, writ
 
 This section outlines how to make a release. The [CHANGELOG.md](CHANGELOG.md) is in a format that allows the usage of the tool [chag](https://github.com/mtdowling/chag).
 
+## Install tools
+
+### chag
+
+This is a simple command line tool that helps to manage the changelog file and can create annotated tags with the contents contained in the changelog file. Because this tool is so useful the following sections are based on that and require it to be installed. The installation of the tool is easy:
+
+```
+# clone the repository
+# note that this version includes some pull requests
+# that are not available in the original repository
+~$ git clone https://github.com/dpsenner/chag.git
+
+# add a symbolic link to the latest version of chag
+~$ sudo ln -s /usr/local/bin/chag `pwd chag/chag`
+```
+
 ## Prepare the release
 
 * Checkout develop by running `git checkout develop`
@@ -248,7 +264,7 @@ $ chag contents Unreleased
 * Run `chag update $version`. This should update `## Unreleased` to read as `## $version - $today`
 * Commit the changes
 * Create release branch `git branch release/v$version`
-* Update `CHANGELOG.md` to contain once more the section `## Unreleased`
+* Run `chag next`. This should update `CHANGELOG.md` to contain once more the section `## Unreleased`.
 * Push the new head of `develop`: `git push`
 
 ## Make the release
