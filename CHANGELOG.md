@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 
 ## Unreleased
 
+### Fixed
+
+* Fixed exception handling to not throw exceptions
+
 ## 1.1.3 - 2017-07-22
 
 ### Changed
