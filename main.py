@@ -53,12 +53,12 @@ class XmlRpc(object):
 		torrentdata = torrent.Content
 
 		# load raw start torrent
+		import xmlrpclib
 		try:
-			import xmlrpclib
 			proxy = xmlrpclib.ServerProxy(self.Uri, encoding='utf-8')
 			arg1 = xmlrpclib.Binary(torrentdata)
 			return proxy.load_raw_start(arg1)
-		except ConnectionError:
+		except xmlrpclib.Error:
 			_, ex, traceback = sys.exc_info()
 			raise Exception(u"Could not start {0}.".format(torrent.Title)), (ex.errno, ex.message), traceback
 
@@ -90,16 +90,16 @@ class RSSFeed(object):
 			r = requests.get(torrent.Link, cookies=self.Cookies)
 			torrentdata = r.content
 			return TorrentFile(torrent.Title, torrent.Link, torrentdata)
-		except ConnectionError:
+		except requests.exceptions.ConnectionError:
 			_, ex, traceback = sys.exc_info()
 			raise Exception(u"Could not fetch torrent file for {0}.".format(torrent.Title)), (ex.errno, ex.message), traceback
 
 	def _getTorrentsGenerator(self):
 		# fetch rss feed content
+		import requests
 		try:
-			import requests
 			r = requests.get(self.Uri, cookies=self.Cookies)
-		except ConnectionError:
+		except requests.exceptions.ConnectionError:
 			_, ex, traceback = sys.exc_info()
 			raise Exception(u"Could not fetch feed."), (ex.errno, ex.message), traceback
 		data = r.content
