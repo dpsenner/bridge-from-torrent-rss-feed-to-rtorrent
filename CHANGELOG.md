@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) while it uses a changelog format that is compatible with [chag](https://github.com/mtdowling/chag).
 
+## 1.1.5 - 2017-07-26
+
+### Fixed
+
+* Fixed the exception handling to no longer cause TypeErrors; this behavior was introduced with 1.1.4.
+  Now when an exception happens the application prints a FAIL and in the following lines the exception
+  message and the traceback.
+
 ## 1.1.4 - 2017-07-24
 
 ### Fixed
