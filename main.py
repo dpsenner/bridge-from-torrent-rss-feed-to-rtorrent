@@ -1,5 +1,6 @@
 #!/usr/bin/python2.7
 import sys
+import traceback
 
 class RSSTorrent(object):
 	def __init__(self, title, link):
@@ -60,7 +61,7 @@ class XmlRpc(object):
 			return proxy.load_raw_start(arg1)
 		except xmlrpclib.Error:
 			_, ex, traceback = sys.exc_info()
-			raise Exception(u"Could not start {0}.".format(torrent.Title)), (ex.errno, ex.message), traceback
+			raise RuntimeError, "Could not start {0}.\n{1}".format(torrent.Title, ex), traceback
 
 	def _getUri(self):
 		return self.__uri
@@ -92,7 +93,7 @@ class RSSFeed(object):
 			return TorrentFile(torrent.Title, torrent.Link, torrentdata)
 		except requests.exceptions.ConnectionError:
 			_, ex, traceback = sys.exc_info()
-			raise Exception(u"Could not fetch torrent file for {0}.".format(torrent.Title)), (ex.errno, ex.message), traceback
+			raise RuntimeError, "Could not fetch torrent file for {0}.\n{1}".format(torrent.Title, ex), traceback
 
 	def _getTorrentsGenerator(self):
 		# fetch rss feed content
@@ -101,7 +102,7 @@ class RSSFeed(object):
 			r = requests.get(self.Uri, cookies=self.Cookies)
 		except requests.exceptions.ConnectionError:
 			_, ex, traceback = sys.exc_info()
-			raise Exception(u"Could not fetch feed."), (ex.errno, ex.message), traceback
+			raise RuntimeError, "Could not fetch feed.\n{0}".format(ex), traceback
 		data = r.content
 
 		# parse rss feed
@@ -202,23 +203,39 @@ def main():
 	if verbose:
 		sys.stdout.write(u"Fetching rss feed .. ")
 		sys.stdout.flush()
-	torrents = rssfeed.getTorrents()
-	if verbose:
-		print u"OK"
+	try:
+		torrents = rssfeed.getTorrents()
+		if verbose:
+			print u"OK"
+	except RuntimeError:
+		print u"FAIL"
+		traceback.print_exc()
+		return
 	if torrents:
 		for torrent in torrents:
 			if verbose:
 				print u"Processing torrent {0} ..".format(torrent.Title)
 				sys.stdout.write(u"Fetching torrent file .. ")
 				sys.stdout.flush()
-			torrentfile = rssfeed.getTorrentFile(torrent)
+			try:
+				torrentfile = rssfeed.getTorrentFile(torrent)
+				if verbose:
+					print u"OK"
+			except RuntimeError:
+				print u"FAIL"
+				traceback.print_exc()
+				return
 			if verbose:
-				print u"OK"
 				sys.stdout.write(u"Invoking loadstart .. ")
 				sys.stdout.flush()
-			xmlrpc.loadstart(torrentfile)
-			if verbose:
-				print u"OK"
+			try:
+				xmlrpc.loadstart(torrentfile)
+				if verbose:
+					print u"OK"
+			except RuntimeError:
+				print u"FAIL"
+				traceback.print_exc()
+				return
 	else:
 		if verbose:
 			print u"Received no torrents from the rss feed."
