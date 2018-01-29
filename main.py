@@ -207,6 +207,8 @@ def main():
 		torrents = rssfeed.getTorrents()
 		if verbose:
 			print u"OK"
+	except ConnectionError:
+		return
 	except RuntimeError:
 		print u"FAIL"
 		traceback.print_exc()
