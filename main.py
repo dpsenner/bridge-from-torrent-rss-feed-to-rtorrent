@@ -58,7 +58,7 @@ class XmlRpc(object):
 		try:
 			proxy = xmlrpclib.ServerProxy(self.Uri, encoding='utf-8')
 			arg1 = xmlrpclib.Binary(torrentdata)
-			return proxy.load_raw_start(arg1)
+			return proxy.load.raw_start("", arg1)
 		except xmlrpclib.Error:
 			_, ex, traceback = sys.exc_info()
 			raise RuntimeError, "Could not start {0}.\n{1}".format(torrent.Title, ex), traceback
