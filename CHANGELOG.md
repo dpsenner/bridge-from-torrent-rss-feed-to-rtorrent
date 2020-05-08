@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html) while it uses a changelog format that is compatible with [chag](https://github.com/mtdowling/chag).
 
+## Unreleased
+
+* Fixed starting torrents to work with rtorrent 0.9.7 by adapting the new api endpoint `load.raw_start` in favor of the deprecated `load_raw_start` endpoint
+
 ## 1.1.5 - 2017-07-26
 
 ### Fixed
