@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Changed
 
 * Fixed starting torrents to work with rtorrent 0.9.7 by adapting the new api endpoint `load.raw_start` in favor of the deprecated `load_raw_start` endpoint
+* Migrated codebase to work with python3
 
 ## 1.1.5 - 2017-07-26
 
