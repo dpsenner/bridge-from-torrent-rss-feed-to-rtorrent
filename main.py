@@ -1,6 +1,7 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 import sys
 import traceback
+from requests.exceptions import ConnectionError
 
 class RSSTorrent(object):
 	def __init__(self, title, link):
@@ -14,7 +15,8 @@ class RSSTorrent(object):
 		return self.__link
 
 	def __repr__(self):
-		return u"{0} ({1})".format(self.Title, self.Link)
+		return "{0} ({1})".format(self.Title, self.Link)
+
 
 	Title = property(_getTitle)
 	Link = property(_getLink)
@@ -35,7 +37,7 @@ class TorrentFile(object):
 		return self.__content
 
 	def __repr__(self):
-		return u"{0} ({1})".format(self.Title, self.Link)
+		return "{0} ({1})".format(self.Title, self.Link)
 
 	Title = property(_getTitle)
 	Link = property(_getLink)
@@ -48,20 +50,20 @@ class XmlRpc(object):
 
 	def loadstart(self, torrent):
 		if not isinstance(torrent, TorrentFile):
-			raise ValueError(u"Expected {0} but got {1} instead".format(TorrentFile, type(torrent)))
+			raise ValueError("Expected {0} but got {1} instead".format(TorrentFile, type(torrent)))
 
 		# get the content of the torrent file
 		torrentdata = torrent.Content
 
 		# load raw start torrent
-		import xmlrpclib
+		import xmlrpc.client
 		try:
-			proxy = xmlrpclib.ServerProxy(self.Uri, encoding='utf-8')
-			arg1 = xmlrpclib.Binary(torrentdata)
+			proxy = xmlrpc.client.ServerProxy(self.Uri, encoding='utf-8')
+			arg1 = xmlrpc.client.Binary(torrentdata)
 			return proxy.load.raw_start("", arg1)
-		except xmlrpclib.Error:
+		except xmlrpc.client.Error:
 			_, ex, traceback = sys.exc_info()
-			raise RuntimeError, "Could not start {0}.\n{1}".format(torrent.Title, ex), traceback
+			raise RuntimeError("Could not start {0}.\n{1}".format(torrent.Title, ex), traceback)
 
 	def _getUri(self):
 		return self.__uri
@@ -79,11 +81,12 @@ class RSSFeed(object):
 
 	def getTorrents(self):
 		torrents = self._getTorrentsGenerator()
-		return list(torrents)
+		items = list(torrents)
+		return items
 
 	def getTorrentFile(self, torrent):
 		if not isinstance(torrent, RSSTorrent):
-			raise ValueError(u"Expected {0} but got {1} instead".format(RSSTorrent, type(torrent)))
+			raise ValueError("Expected {0} but got {1} instead".format(RSSTorrent, type(torrent)))
 
 		# fetch torrent content
 		try:
@@ -93,7 +96,7 @@ class RSSFeed(object):
 			return TorrentFile(torrent.Title, torrent.Link, torrentdata)
 		except requests.exceptions.ConnectionError:
 			_, ex, traceback = sys.exc_info()
-			raise RuntimeError, "Could not fetch torrent file for {0}.\n{1}".format(torrent.Title, ex), traceback
+			raise RuntimeError("Could not fetch torrent file for {0}.\n{1}".format(torrent.Title, ex), traceback)
 
 	def _getTorrentsGenerator(self):
 		# fetch rss feed content
@@ -102,7 +105,7 @@ class RSSFeed(object):
 			r = requests.get(self.Uri, cookies=self.Cookies)
 		except requests.exceptions.ConnectionError:
 			_, ex, traceback = sys.exc_info()
-			raise RuntimeError, "Could not fetch feed.\n{0}".format(ex), traceback
+			raise RuntimeError("Could not fetch feed.\n{0}".format(ex), traceback)
 		data = r.content
 
 		# parse rss feed
@@ -126,7 +129,7 @@ class RSSFeed(object):
 class CommandLineArguments(object):
 
 	def _getArgument(self, arg, prefix):
-		needle = u"{0}=".format(prefix)
+		needle = "{0}=".format(prefix)
 		if arg.startswith(needle):
 			return arg[len(needle):]
 		return None
@@ -143,14 +146,14 @@ class CommandLineArguments(object):
 	def _getFirstRequiredArgument(self, prefix):
 		result = self._getFirstArgument(prefix)
 		if not result:
-			raise ValueError(u"Missing required argument {0}".format(prefix))
+			raise ValueError("Missing required argument {0}".format(prefix))
 		return result
 
 	def _getRSSFeedUri(self):
-		return self._getFirstRequiredArgument(u"--rss-feed-uri")
+		return self._getFirstRequiredArgument("--rss-feed-uri")
 
 	def _getXmlRpcUri(self):
-		return self._getFirstRequiredArgument(u"--xml-rpc-uri")
+		return self._getFirstRequiredArgument("--xml-rpc-uri")
 
 	def _getRSSFeedCookies(self):
 		cookies = {}
@@ -158,16 +161,16 @@ class CommandLineArguments(object):
 		cookie_value = None
 		for arg in sys.argv:
 			# check if argument is a cookie key
-			cookie_key_value = self._getArgument(arg, u"--rss-feed-cookie-key")
+			cookie_key_value = self._getArgument(arg, "--rss-feed-cookie-key")
 			if cookie_key_value:
 				cookie_key = cookie_key_value
 
 			# check if argument is a cookie value
-			cookie_value_value = self._getArgument(arg, u"--rss-feed-cookie-value")
+			cookie_value_value = self._getArgument(arg, "--rss-feed-cookie-value")
 			if cookie_value_value:
 				cookie_value = cookie_value_value
 				if not cookie_key:
-					raise ValueError(u"Expected --rss-feed-cookie-key before {0}".format(arg))
+					raise ValueError("Expected --rss-feed-cookie-key before {0}".format(arg))
 
 			# check if both are set; store it and reset both
 			if cookie_key and cookie_value:
@@ -176,13 +179,13 @@ class CommandLineArguments(object):
 		return cookies
 
 	def _getVerbose(self):
-		value = self._getFirstArgument(u"--verbose")
+		value = self._getFirstArgument("--verbose")
 		if value in [None, "yes"]:
 			return True
 		elif value in ["no"]:
 			return False
 		else:
-			raise ValueError(u"Expected --verbose=[yes|no] but got --verbose={0} instead".format(value))
+			raise ValueError("Expected --verbose=[yes|no] but got --verbose={0} instead".format(value))
 		
 	RSSFeedUri = property(_getRSSFeedUri)
 	XmlRpcUri = property(_getXmlRpcUri)
@@ -201,48 +204,48 @@ def main():
 	rssfeed = RSSFeed(rssuri, rssfeedcookies)
 	xmlrpc = XmlRpc(xmlrpcuri, rssfeedcookies)
 	if verbose:
-		sys.stdout.write(u"Fetching rss feed .. ")
+		sys.stdout.write("Fetching rss feed .. ")
 		sys.stdout.flush()
 	try:
 		torrents = rssfeed.getTorrents()
 		if verbose:
-			print u"OK"
-	except ConnectionError:
+			print("OK")
+	except Exception:
 		return
 	except RuntimeError:
-		print u"FAIL"
+		print("FAIL")
 		traceback.print_exc()
 		return
 	if torrents:
 		for torrent in torrents:
 			if verbose:
-				print u"Processing torrent {0} ..".format(torrent.Title)
-				sys.stdout.write(u"Fetching torrent file .. ")
+				print("Processing torrent {0} ..".format(torrent.Title))
+				sys.stdout.write("Fetching torrent file .. ")
 				sys.stdout.flush()
 			try:
 				torrentfile = rssfeed.getTorrentFile(torrent)
 				if verbose:
-					print u"OK"
+					print("OK")
 			except RuntimeError:
-				print u"FAIL"
+				print("FAIL")
 				traceback.print_exc()
 				return
 			if verbose:
-				sys.stdout.write(u"Invoking loadstart .. ")
+				sys.stdout.write("Invoking loadstart .. ")
 				sys.stdout.flush()
 			try:
 				xmlrpc.loadstart(torrentfile)
 				if verbose:
-					print u"OK"
+					print("OK")
 			except RuntimeError:
-				print u"FAIL"
+				print("FAIL")
 				traceback.print_exc()
 				return
 	else:
 		if verbose:
-			print u"Received no torrents from the rss feed."
+			print("Received no torrents from the rss feed.")
 	if verbose:
-		print u"Work done, bye!"
+		print("Work done, bye!")
 
 if __name__ == '__main__':
 	main()
