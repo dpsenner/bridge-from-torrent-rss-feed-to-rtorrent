@@ -125,16 +125,16 @@ A typical installation would add the script as a cronjob that runs regularily ev
 
 These are the requirements for this tool to work:
 
-- python2.7
-- python-feedparser
-- python-requests
+- python3
+- python3-feedparser
+- python3-requests
 
-### Install requirements on Ubuntu 16.04 LTS
+### Install requirements on a debian based linux distribution
 
-This section explains how to install the requirements on ubuntu 16.04 LTS.
+This section explains how to install the requirements on a debian based linux distribution.
 
 ```
-~$ sudo apt install python2.7 python-feedparser python-requests
+~$ sudo apt install python3 python3-feedparser python3-requests
 ```
 
 ### rtorrent requirements
